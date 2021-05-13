@@ -1,2 +1,47 @@
-# venus-processing
-Simple scripts for the data processing and retrieval for the Venµs satellite imagery
+# Venµs data processing
+
+## Description
+
+Simple scripts for the data processing and retrieval for the Venµs satellite
+imagery. Find all the scripts in the directory `scripts`.
+
+## Data retrieval
+
+Once you order the data through
+the [Venµs data portal](https://venus.bgu.ac.il/venus/), you should receive
+an e-mail with an ftp with all the data. Instead of downloading each of them
+individually, you could run `download-results.sh`. See the following help:
+
+```
+download-results.sh
+Download all Venus data from the link the user has been provided.
+
+Syntax: download-results.sh [-h] url username
+options:
+url         The url the user has obtained from the Venus request
+username    The username required to obtain the data
+h           Print this help and exit
+```
+
+## Data processing
+
+To filter the data based on the cloud coverage, you could run
+`filter-cloud-coverage.py`. See the following help:
+
+```
+usage: filter-cloud-coverage.py [-h] --data_dir DATA_DIR [--cloud_min CC_MIN] \
+    [--cloud_max CC_MAX] [--operation {report,delete}]
+
+Print list of files with the desired cloud coverage or cleanup the directory \
+    from the undesired ones
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --data_dir DATA_DIR   Path to the directory containing Venus data
+  --cloud_min CC_MIN    Minimal desired cloud coverage in percents (inclusive)
+  --cloud_max CC_MAX    Maximal desired cloud coverage in percents (inclusive)
+  --operation {report,delete}
+                        An operation to perform: Either to print suiting files
+                        on the standard output or to delete the ones that do
+                        not suit the desired cloud coverage
+```
