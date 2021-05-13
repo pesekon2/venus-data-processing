@@ -25,6 +25,19 @@ h           Print this help and exit
 
 ## Data processing
 
+To unzip all the retrieved data, you could run `unzip-archives.sh`. See
+the following help:
+
+```
+unzip-archives.sh
+Unzip all downloaded archives and save them to the same directory.
+
+Syntax: unzip-archives.sh [-h] data_dir
+options:
+data_dir    Path to the directory containing the archives
+h           Print this help and exit
+```
+
 To filter the data based on the cloud coverage, you could run
 `filter-cloud-coverage.py`. See the following help:
 
