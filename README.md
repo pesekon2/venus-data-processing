@@ -29,10 +29,10 @@ To filter the data based on the cloud coverage, you could run
 `filter-cloud-coverage.py`. See the following help:
 
 ```
-usage: filter-cloud-coverage.py [-h] --data_dir DATA_DIR [--cloud_min CC_MIN] \
+usage: filter-cloud-coverage.py [-h] --data_dir DATA_DIR [--cloud_min CC_MIN]
     [--cloud_max CC_MAX] [--operation {report,delete}]
 
-Print list of files with the desired cloud coverage or cleanup the directory \
+Print list of files with the desired cloud coverage or cleanup the directory
     from the undesired ones
 
 optional arguments:
