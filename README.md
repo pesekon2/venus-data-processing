@@ -43,7 +43,7 @@ To filter the data based on the cloud coverage, you could run
 
 ```
 usage: filter-cloud-coverage.py [-h] --data_dir DATA_DIR [--cloud_min CC_MIN]
-    [--cloud_max CC_MAX] [--operation {report,delete}]
+    [--cloud_max CC_MAX] [--operation {report,extract}] [--delete DELETE]
 
 Print list of files with the desired cloud coverage or cleanup the directory
     from the undesired ones
@@ -53,8 +53,10 @@ optional arguments:
   --data_dir DATA_DIR   Path to the directory containing Venus data
   --cloud_min CC_MIN    Minimal desired cloud coverage in percents (inclusive)
   --cloud_max CC_MAX    Maximal desired cloud coverage in percents (inclusive)
-  --operation {report,delete}
+  --operation {report,extract}
                         An operation to perform: Either to print suiting files
-                        on the standard output or to delete the ones that do
-                        not suit the desired cloud coverage
+                        on the standard output or to extract the DBL archives
+                        for the suiting scenes
+  --delete DELETE       Whether to delete the ones that do not suit the desired
+  cloud coverage
 ```

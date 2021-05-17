@@ -2,6 +2,7 @@
 
 import os
 import glob
+import tarfile
 import argparse
 
 import xml.etree.ElementTree as Etree
@@ -10,7 +11,8 @@ import xml.etree.ElementTree as Etree
 def filter_cc(data_dir: str,
               cc_min: int = 0,
               cc_max: int = 100,
-              operation: str = 'report'):
+              operation: str = 'extract',
+              delete: bool = True):
     """Filter files based on their cloud coverage.
 
     :param data_dir: Path to the directory containing Venus data
@@ -18,7 +20,9 @@ def filter_cc(data_dir: str,
     :param cc_max: Maximal desired cloud coverage in percents (inclusive)
     :param operation: What to do with the findings
         * report: Print suiting files on the standard output
-        * delete: Delete the ones that do not suit the desired cloud coverage
+        * extract: Extract the DBL archives for the suiting scenes
+    :param delete: Whether to delete the ones that do not suit the desired
+        cloud coverage
     """
     filtered_files = []
     xmlns = '{http://eop-cfi.esa.int/CFI}'
@@ -40,11 +44,39 @@ def filter_cc(data_dir: str,
         if cc_min <= int(cc.text) <= cc_max:
             if operation == 'report':
                 print(md_file[:-3] + '*')
-        elif operation == 'delete':
+            if operation == 'extract':
+                # extract DBL and remove the archive
+                archive_path = os.path.join(data_dir, md_file[:-3] + 'DBL')
+                with tarfile.open(archive_path) as tar:
+                    tar.extractall(path=data_dir)
+                os.remove(archive_path)
+        elif delete is True:
+            # remove metadata and the DBL archive of the scenes not meeting
+            # the criteria
             for f in glob.glob(os.path.join(data_dir, md_file[:-3] + '*')):
                 os.remove(f)
 
     return filtered_files
+
+
+def _str2bool(string_val):
+    """Transform a string looking like a boolean value to a boolean value.
+
+    This is needed because using type=bool in argparse actually parses strings.
+    Such an behaviour could result in `--extract False` being
+    misinterpreted as True (bool('False') == True).
+
+    :param string_val: a string looking like a boolean value
+    :return: the corresponding boolean value
+    """
+    if isinstance(string_val, bool):
+        return string_val
+    elif string_val.lower() in ('true', 'yes', 't', 'y', '1'):
+        return True
+    elif string_val.lower() in ('false', 'no', 'f', 'n', '0'):
+        return False
+    else:
+        raise argparse.ArgumentTypeError('Boolean value expected.')
 
 
 if __name__ == '__main__':
@@ -75,11 +107,19 @@ if __name__ == '__main__':
         type=str,
         dest='operation',
         default='report',
-        choices=('report', 'delete'),
+        choices=('report', 'extract'),
         help='An operation to perform: Either to print suiting files on the '
-             'standard output or to delete the ones that do not suit the '
-             'desired cloud coverage')
+             'standard output or to extract the DBL archives for the suiting '
+             'scenes')
+    parser.add_argument(
+        '--delete',
+        type=_str2bool,
+        dest='delete',
+        default=True,
+        help='Whether to delete the ones that do not suit the desired cloud '
+             'coverage')
 
     args = parser.parse_args()
 
-    filter_cc(args.data_dir, args.cc_min, args.cc_max, args.operation)
+    filter_cc(args.data_dir, args.cc_min, args.cc_max, args.operation,
+              args.delete)
